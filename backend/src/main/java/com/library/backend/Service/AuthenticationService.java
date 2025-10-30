@@ -3,6 +3,7 @@ package com.library.backend.Service;
 import com.library.backend.DTOs.AuthRequestDto;
 import com.library.backend.DTOs.AuthResponseDto;
 import com.library.backend.Security.PasswordEncrypter;
+import com.library.backend.models.Role;
 import com.library.backend.models.User;
 import com.library.backend.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,10 @@ public class AuthenticationService {
         if (!userRepository.existsByUsername(registerRequest.getUsername())){
             User newUser = User.builder().username(registerRequest.getUsername()).
                     password(passwordEncrypter.passwordEncoder().encode(registerRequest.getPassword())).build();
+            newUser.setRole(Role.USER);
+            userRepository.save(newUser);
+            var token = jwtService.generateToken(registerRequest.getUsername());
+            return AuthResponseDto.builder().username(newUser.getUsername()).role(newUser.getRole()).accessToken(token).build();
         }
         throw new RuntimeException("Login failed");
     }
