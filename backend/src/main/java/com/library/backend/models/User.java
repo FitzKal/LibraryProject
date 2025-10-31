@@ -30,4 +30,14 @@ public class User {
     @OneToMany (mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Book> books;
+
+    public void addBook(Book book){
+        books.add(book);
+        book.setUser(this);
+    }
+
+    public void removeBook(Book book){
+        books.remove(book);
+        book.setUser(null);
+    }
 }
