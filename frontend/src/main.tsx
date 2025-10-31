@@ -6,6 +6,7 @@ import {createBrowserRouter, RouterProvider,Navigate} from "react-router-dom"
 import {QueryClientProvider,QueryClient} from "@tanstack/react-query";
 import LoginForm from "./Components/LoginForm.tsx";
 import HomePage from "./Components/HomePage.tsx";
+import RegisterForm from "./Components/RegisterForm.tsx";
 
 const router = createBrowserRouter([
     {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
     {
         path:"/home",
         element:<HomePage/>
+    },
+    {
+        path: "/register",
+        element:<RegisterForm />
     }
 ])
     const query = new QueryClient();
