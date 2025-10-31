@@ -16,7 +16,11 @@ public class Book {
     @Id
     @GeneratedValue(strategy =  GenerationType.AUTO)
     private Long id;
-
+    private String title;
+    private String description;
+    private String pictureSRC;
+    @Enumerated(EnumType.STRING)
+    private Genre genre;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
