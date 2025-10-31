@@ -2,14 +2,24 @@ import "./index.css";
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
-import {createBrowserRouter, RouterProvider} from "react-router-dom"
+import {createBrowserRouter, RouterProvider,Navigate} from "react-router-dom"
 import {QueryClientProvider,QueryClient} from "@tanstack/react-query";
+import LoginForm from "./Components/LoginForm.tsx";
+import HomePage from "./Components/HomePage.tsx";
 
 const router = createBrowserRouter([
     {
         path:"/",
-        element: <p className={"text-red-400"}>hello</p>,
+        element: <Navigate to={"/login"}/>,
         errorElement: <div>404 not found</div>
+    },
+    {
+        path:"/login",
+        element: <LoginForm />
+    },
+    {
+        path:"/home",
+        element:<HomePage/>
     }
 ])
     const query = new QueryClient();
