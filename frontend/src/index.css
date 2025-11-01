@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+@layer base {
+    html, body { @apply h-full; }
+    body { @apply bg-[#f5f5dc]; }
+}
