@@ -5,8 +5,10 @@ import App from './App.tsx'
 import {createBrowserRouter, RouterProvider,Navigate} from "react-router-dom"
 import {QueryClientProvider,QueryClient} from "@tanstack/react-query";
 import LoginForm from "./Components/LoginForm.tsx";
-import HomePage from "./Components/HomePage.tsx";
+import Navbar from "./Components/Navbar.tsx";
 import RegisterForm from "./Components/RegisterForm.tsx";
+import HomePage from "./Components/HomePage.tsx";
+import Books from "./Components/Books.tsx";
 
 const router = createBrowserRouter([
     {
@@ -19,8 +21,18 @@ const router = createBrowserRouter([
         element: <LoginForm />
     },
     {
-        path:"/home",
-        element:<HomePage/>
+        path:"/dashboard",
+        element:<Navbar/>,
+        children:[
+            {
+                path:"/dashboard/home",
+                element:<HomePage />
+            },
+            {
+                path:"/dashboard/books",
+                element:<Books />
+            }
+        ]
     },
     {
         path: "/register",
