@@ -3,6 +3,7 @@ package com.library.backend.Security;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -31,7 +32,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers("api/**").permitAll().anyRequest().permitAll())
+                        request.requestMatchers("api/authenticate/**").permitAll()
+                                .requestMatchers(HttpMethod.GET,"api/books/**").hasAnyRole("ADMIN","USER")
+                                .requestMatchers(HttpMethod.DELETE,"api/books/**").hasAnyRole("ADMIN","USER")
+                                .requestMatchers(HttpMethod.POST,"api/books/**").hasAnyRole("ADMIN","USER")
+                                .requestMatchers(HttpMethod.PUT,"api/books/**").hasAnyRole("ADMIN","USER")
+                                .anyRequest().authenticated())
                 .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
