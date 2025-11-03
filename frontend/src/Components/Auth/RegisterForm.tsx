@@ -1,9 +1,9 @@
 import {type SubmitHandler, useForm} from "react-hook-form";
-import type {AuthFormFields} from "../Types/FormTypes.ts";
+import type {AuthFormFields} from "../../Types/FormTypes.ts";
 import {useMutation} from "@tanstack/react-query";
-import type {UserAuthRequest} from "../Types/User.ts";
-import {userRegister} from "../Services/AuthService.ts";
-import {userStore} from "../Stores/UserStore.ts";
+import type {UserAuthRequest} from "../../Types/User.ts";
+import {userRegister} from "../../Services/AuthService.ts";
+import {userStore} from "../../Stores/UserStore.ts";
 import {toast} from "react-toastify";
 import {Link, useNavigate} from "react-router-dom";
 

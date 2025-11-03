@@ -4,11 +4,12 @@ import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
 import {createBrowserRouter, RouterProvider,Navigate} from "react-router-dom"
 import {QueryClientProvider,QueryClient} from "@tanstack/react-query";
-import LoginForm from "./Components/LoginForm.tsx";
+import LoginForm from "./Components/Auth/LoginForm.tsx";
 import Navbar from "./Components/Navbar.tsx";
-import RegisterForm from "./Components/RegisterForm.tsx";
+import RegisterForm from "./Components/Auth/RegisterForm.tsx";
 import HomePage from "./Components/HomePage.tsx";
-import DisplayBooks from "./Components/DisplayBooks.tsx";
+import DisplayBooks from "./Components/Book/DisplayBooks.tsx";
+import BookPage from "./Components/Book/BookPage.tsx";
 
 const router = createBrowserRouter([
     {
@@ -30,8 +31,12 @@ const router = createBrowserRouter([
             },
             {
                 path:"/dashboard/books",
-                element:<DisplayBooks />
-            }
+                element:<DisplayBooks />,
+            },
+            {
+                path:"/dashboard/books/:param",
+                element:<BookPage />
+            },
         ]
     },
     {

@@ -1,11 +1,11 @@
 import {type SubmitHandler, useForm} from 'react-hook-form';
-import type {AuthFormFields} from "../Types/FormTypes.ts";
+import type {AuthFormFields} from "../../Types/FormTypes.ts";
 import {useNavigate, Link} from 'react-router-dom';
-import "../styles/AuthForms.css"
+import "../../styles/AuthForms.css"
 import {useMutation} from "@tanstack/react-query";
-import type {UserAuthRequest} from "../Types/User.ts";
-import {userLogin} from "../Services/AuthService.ts";
-import {userStore} from "../Stores/UserStore.ts";
+import type {UserAuthRequest} from "../../Types/User.ts";
+import {userLogin} from "../../Services/AuthService.ts";
+import {userStore} from "../../Stores/UserStore.ts";
 import {toast} from "react-toastify";
 
 
