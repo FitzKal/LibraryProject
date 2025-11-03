@@ -84,6 +84,6 @@ public class BookService {
 
     private boolean checkOwnerShip(String username, Book book){
         var user = userRepository.findByUsername(username);
-        return (book.getUser().getUsername().equals(username) || user.getRole().equals(Role.USER));
+        return (book.getUser().getUsername().equals(username) || user.getRole().equals(Role.ADMIN));
     }
 }

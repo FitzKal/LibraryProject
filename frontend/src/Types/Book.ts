@@ -21,7 +21,6 @@ export type book = {
 
 export type bookElementProp = {
     bookInfo: Book;
-    onDelete: (id: number) => void;
 }
 
 export type bookProp = {

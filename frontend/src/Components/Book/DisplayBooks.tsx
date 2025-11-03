@@ -1,7 +1,7 @@
 import {type MouseEventHandler, useEffect, useState} from "react";
-import {deleteBook, getAllBooks} from "../../Services/BookService.ts";
+import { getAllBooks} from "../../Services/BookService.ts";
 import {userStore} from "../../Stores/UserStore.ts";
-import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import { useQuery} from "@tanstack/react-query";
 import {toast} from "react-toastify";
 import type {book} from "../../Types/Book.ts";
 import PostBookForm from "./PostBookForm.tsx";
@@ -10,7 +10,6 @@ import BookElement from "./BookElement.tsx";
 export default function DisplayBooks(){
 
     const currentUser = userStore.getState().user;
-    const queryClient = useQueryClient();
 
     const [isPosting, setPosting] = useState<boolean>(false);
 
@@ -40,26 +39,6 @@ export default function DisplayBooks(){
 
     }
 
-    const deleteMutation = useMutation({
-        mutationFn:(data: number) => deleteBook(currentUser.accessToken,data),
-        onSuccess:() => {
-            toast.success("The chosen book has been deleted");
-            queryClient.invalidateQueries({queryKey:["books"]});
-        },
-        onError:(error) =>{
-            if (error instanceof Error){
-                console.log(error.message);
-                toast.error(error.message);
-            } else {
-                toast.error("Something went wrong");
-            }
-        }
-    })
-
-    const handleDelete = (id:number) =>{
-        deleteMutation.mutate(id);
-    }
-
     return isLoading ? (
         <p>Loading...</p>
     ):(<div className={" ml-6 mr-6"}>
@@ -68,7 +47,7 @@ export default function DisplayBooks(){
             {(isPosting) ? <PostBookForm/> : <></>}
             <div className={"flex flex-wrap flex-row gap-15 mt-10"}>
                 {data.map((book:book) =>
-                    <BookElement key={book.id} bookInfo={book} onDelete={handleDelete} />
+                    <BookElement key={book.id} bookInfo={book} />
                 )}
 
             </div>

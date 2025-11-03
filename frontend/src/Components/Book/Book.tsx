@@ -10,7 +10,7 @@ export default function Book(props:bookProp){
             <img className={"h-80 w-55 mb-2 transition delay-150 duration-300 ease-in-out hover:scale-130"} src={props.bookInfo.pictureSRC} alt={props.bookInfo.title}/>
             <p>Author: {props.bookInfo.author}</p>
             <p>Genre: {props.bookInfo.genre}</p>
-            <p>Added by: {props.bookInfo.username}</p>
+            <p className={"mb-2"}>Added by: {props.bookInfo.username}</p>
         </div>
     )
 }
