@@ -3,6 +3,7 @@ export interface Book{
     id?:number,
     title:string,
     description?:string,
+    author:string,
     pictureSRC?:string,
     genre?:"FANTASY" | "THRILLER" | "SCIFI" | "ROMANCE",
     username:string
@@ -11,12 +12,18 @@ export interface Book{
 export type book = {
     id?:number,
     title:string,
+    author:string,
     description?:string,
     pictureSRC?:string,
     genre?:"FANTASY" | "THRILLER" | "SCIFI" | "ROMANCE",
     username:string
 }
 
-export type bookProp = {
+export type bookElementProp = {
     bookInfo: Book;
+    onDelete: (id: number) => void;
+}
+
+export type bookProp = {
+    bookInfo: Book
 }
