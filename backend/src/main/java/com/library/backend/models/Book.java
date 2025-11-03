@@ -18,6 +18,7 @@ public class Book {
     private Long id;
     @Column(nullable = false, unique = true)
     private String title;
+    @Column(length = 20000)
     private String description;
     private String pictureSRC;
     @Enumerated(EnumType.STRING)
