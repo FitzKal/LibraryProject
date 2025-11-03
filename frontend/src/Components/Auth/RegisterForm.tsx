@@ -48,7 +48,7 @@ export default function RegisterForm(){
                                 value: 4,
                                 message: "The username should be at least 4 characters long"
                             }
-                        })} type={"text"} placeholder={"Username"} className={"bg-white"}/>
+                        })} type={"text"} placeholder={"Username"} className={"textInput bg-white"}/>
                         {errors.username &&( <div className={"text-red-500"}>{errors.username.message}</div>)}
                         <input {...register("password",{
                             required :"Password is required",
