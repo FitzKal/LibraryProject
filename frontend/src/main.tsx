@@ -8,7 +8,7 @@ import LoginForm from "./Components/LoginForm.tsx";
 import Navbar from "./Components/Navbar.tsx";
 import RegisterForm from "./Components/RegisterForm.tsx";
 import HomePage from "./Components/HomePage.tsx";
-import Books from "./Components/Books.tsx";
+import DisplayBooks from "./Components/DisplayBooks.tsx";
 
 const router = createBrowserRouter([
     {
@@ -30,7 +30,7 @@ const router = createBrowserRouter([
             },
             {
                 path:"/dashboard/books",
-                element:<Books />
+                element:<DisplayBooks />
             }
         ]
     },
