@@ -15,6 +15,7 @@ public class BookResponseDTO {
     private String title;
     private String description;
     private String pictureSRC;
+    private String author;
     private Genre genre;
     private String username;
 }

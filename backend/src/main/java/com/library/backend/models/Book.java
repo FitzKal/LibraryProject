@@ -21,6 +21,7 @@ public class Book {
     @Column(length = 20000)
     private String description;
     private String pictureSRC;
+    private String author;
     @Enumerated(EnumType.STRING)
     private Genre genre;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

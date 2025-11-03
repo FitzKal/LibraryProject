@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class BookRequestDTO {
     private String title;
     private String description;
+    private String author;
     private String pictureSRC;
     private Genre genre;
 }
