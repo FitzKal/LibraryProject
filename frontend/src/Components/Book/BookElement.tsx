@@ -5,7 +5,7 @@ import {deleteBook} from "../../Services/BookService.ts";
 import {toast} from "react-toastify";
 import {userStore} from "../../Stores/UserStore.ts";
 
-export default function BookElement({bookInfo}:bookElementProp){
+export default function BookElement({bookInfo,setUpdating}:bookElementProp){
 
     const currentUser = userStore.getState().user;
     const queryClient = useQueryClient();
@@ -36,6 +36,7 @@ export default function BookElement({bookInfo}:bookElementProp){
             "text-white transition delay-50 ease-in-out hover:bg-red-500"}
                 onClick={()=>handleDelete(bookInfo.id)}>Delete</button>
         <button className={"text-l border-2 rounded-2xl ml-10 pl-1 pr-1 w-20 bg-blue-800 " +
-            "text-white transition delay-50 ease-in-out hover:bg-blue-500"}>Edit</button>
+            "text-white transition delay-50 ease-in-out hover:bg-blue-500"}
+                onClick={() => setUpdating(bookInfo)}>Edit</button>
     </div>);
 }

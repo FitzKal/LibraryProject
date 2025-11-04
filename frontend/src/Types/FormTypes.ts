@@ -11,6 +11,7 @@ export type PostBookFormFields = {
 }
 
 export type BookRequest = {
+    id?:number
     title:string,
     pictureSRC: string,
     description:string,

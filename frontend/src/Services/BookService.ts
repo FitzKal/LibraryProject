@@ -1,5 +1,6 @@
 // ------------- GetAll -------------
 import type {BookRequest} from "../Types/FormTypes.ts";
+import type {book} from "../Types/Book.ts";
 
 export const getAllBooks = async (accessToken:string) =>{
     const res = await fetch("/api/books",{
@@ -64,6 +65,27 @@ export const deleteBook = async (accessToken:string ,id:number) => {
         return await res.text();
     }else{
         const error = await res.text();
-        throw new Error(error || "Request could not be completed");
+        throw new Error(error || "You are not the owner of the book, or don't have permission to delete the book");
+    }
+}
+
+// ------------- UpdateBook -------------
+
+export const updateBook = async (accessToken:string,updateRequest:book,id:number) =>{
+    const res = await fetch(`/api/books/${id}`,{
+        method: "PUT",
+        headers:{
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type" : "application/json",
+        },
+        body:JSON.stringify(updateRequest),
+    });
+    if (res.ok){
+        const response = await res.json();
+        console.log(response);
+        return response;
+    }else{
+        const message = await res.text();
+        throw new Error(message || "You are not the owner of the book, or don't have permission to edit the book");
     }
 }

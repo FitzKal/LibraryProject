@@ -1,17 +1,20 @@
-import {type MouseEventHandler, useEffect, useState} from "react";
+import {type MouseEventHandler, use, useEffect, useState} from "react";
 import { getAllBooks} from "../../Services/BookService.ts";
 import {userStore} from "../../Stores/UserStore.ts";
 import { useQuery} from "@tanstack/react-query";
 import {toast} from "react-toastify";
-import type {book} from "../../Types/Book.ts";
+import type {Book, book} from "../../Types/Book.ts";
 import PostBookForm from "./PostBookForm.tsx";
 import BookElement from "./BookElement.tsx";
+import UpdateBookForm from "./UpdateBookForm.tsx";
 
 export default function DisplayBooks(){
 
     const currentUser = userStore.getState().user;
 
     const [isPosting, setPosting] = useState<boolean>(false);
+    const [isUpdating, setUpdating] = useState<boolean>(false);
+    const [toUpdate, setToUpdate] = useState<Book>();
 
     const {data, error, isError, isLoading} = useQuery({
         queryKey: ["books"],
@@ -36,8 +39,17 @@ export default function DisplayBooks(){
         }else {
             setPosting(false);
         }
-
     }
+
+    const handleUpdating = (book:Book) =>{
+        if (!isUpdating){
+            setUpdating(true);
+            setToUpdate(book);
+        }else {
+            setUpdating(false);
+        }
+    }
+
 
     return isLoading ? (
         <p>Loading...</p>
@@ -45,9 +57,10 @@ export default function DisplayBooks(){
             <button className={"text-xl border-2 rounded-2xl pl-2 pr-2 mb-10 mt-10 ml-20 bg-blue-200 transition delay-75 ease-in-out hover:bg-blue-400"}
             onClick={handleEditing}>Add book</button>
             {(isPosting) ? <PostBookForm/> : <></>}
+            {(isUpdating)?<UpdateBookForm bookInfo={toUpdate}/>:<></>}
             <div className={"flex flex-wrap flex-row gap-15 mt-10"}>
                 {data.map((book:book) =>
-                    <BookElement key={book.id} bookInfo={book} />
+                    <BookElement key={book.id} bookInfo={book} setUpdating={handleUpdating} />
                 )}
 
             </div>

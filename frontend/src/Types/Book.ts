@@ -21,6 +21,7 @@ export type book = {
 
 export type bookElementProp = {
     bookInfo: Book;
+    setUpdating : (book:book)=> void;
 }
 
 export type bookProp = {
