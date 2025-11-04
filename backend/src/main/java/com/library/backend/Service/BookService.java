@@ -55,6 +55,7 @@ public class BookService {
             bookToUpdate.setDescription(bookRequestDTO.getDescription());
             bookToUpdate.setPictureSRC(bookRequestDTO.getPictureSRC());
             bookToUpdate.setGenre(bookRequestDTO.getGenre());
+            bookRepository.save(bookToUpdate);
             return bookDTOConverter.BookToResponse(bookToUpdate);
         }else {
             throw new RuntimeException("You are not the owner of the book, or don't have permission to edit the book");
