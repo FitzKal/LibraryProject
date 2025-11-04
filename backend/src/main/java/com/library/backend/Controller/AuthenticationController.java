@@ -3,6 +3,7 @@ package com.library.backend.Controller;
 import com.library.backend.DTOs.AuthRequestDto;
 import com.library.backend.DTOs.AuthResponseDto;
 import com.library.backend.Service.AuthenticationService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,12 @@ public class AuthenticationController {
     public ResponseEntity<AuthResponseDto> register(@RequestBody @NonNull AuthRequestDto registerRequest){
         var response = authenticationService.Register(registerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request){
+        var message = authenticationService.Logout(request);
+        return ResponseEntity.ok(message);
     }
 
 }

@@ -6,6 +6,7 @@ import com.library.backend.Security.PasswordEncrypter;
 import com.library.backend.models.Role;
 import com.library.backend.models.User;
 import com.library.backend.repositories.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -38,5 +39,9 @@ public class AuthenticationService {
         throw new RuntimeException("Login failed");
     }
 
+    public String Logout(HttpServletRequest request){
+        jwtService.addToBlackList(request);
+        return "Successfully logged out!";
+    }
 
 }
