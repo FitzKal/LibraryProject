@@ -1,4 +1,6 @@
 package com.library.backend.Service;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.library.backend.Converters.BookDTOConverter;
 import com.library.backend.DTOs.BookRequestDTO;
 import com.library.backend.DTOs.BookResponseDTO;
@@ -9,8 +11,13 @@ import com.library.backend.repositories.BookRepository;
 import com.library.backend.repositories.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.nio.file.Files;
 import java.util.List;
 
 @AllArgsConstructor
@@ -20,6 +27,7 @@ public class BookService {
     private final JWTService jwtService;
     private final UserRepository userRepository;
     private final BookDTOConverter bookDTOConverter;
+    private final ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
     public BookResponseDTO createBook(HttpServletRequest request, BookRequestDTO bookRequestDTO){
         var user = getUserFromRequest(request);
@@ -38,13 +46,26 @@ public class BookService {
         return response;
     }
 
+    @SneakyThrows
     public List<BookResponseDTO> getAllBooks(){
-        return bookRepository.findAll().stream()
+        var list = bookRepository.findAll().stream()
                 .map(book -> {
                     var response = bookDTOConverter.BookToResponse(book);
                     response.setUsername(book.getUser().getUsername());
                     return response;
                 }).toList();
+      /*  var jsonList = list.stream().map(objectWriter::writeValueAsString).toList();
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("books,txt"));
+            for(var element : jsonList){
+                writer.write(element);
+                writer.newLine();
+            }
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }*/
+
+        return list;
     }
 
     public BookResponseDTO updateBook(HttpServletRequest request, Long id, BookRequestDTO bookRequestDTO){

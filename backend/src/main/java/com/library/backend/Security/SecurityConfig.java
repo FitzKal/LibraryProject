@@ -38,6 +38,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.DELETE,"api/books/**").hasAnyRole("ADMIN","USER")
                                 .requestMatchers(HttpMethod.POST,"api/books/**").hasAnyRole("ADMIN","USER")
                                 .requestMatchers(HttpMethod.PUT,"api/books/**").hasAnyRole("ADMIN","USER")
+                                .requestMatchers("api/admin/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/api/authenticate/logout").authenticated()
                                 .anyRequest().authenticated())
                 .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
