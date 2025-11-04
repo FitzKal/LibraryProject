@@ -34,9 +34,9 @@ export default function PostBookForm(){
     })
 
     return (
-        <div className={"flex flex-col justify-center ml-18 mb-5"}>
+        <div className={"flex flex-col justify-center m-auto mb-5"}>
             <h1 className={"text-center mr-10 text-xl mb-3"}>Add a new book</h1>
-          <div className={"flex border-2 rounded-2xl p-2 w-250 bg-yellow-100"}>
+          <div className={"flex border-2 rounded-2xl p-2 w-250 self-center bg-yellow-100"}>
               <form onSubmit={handleSubmit(onSubmit)}>
                  <div className={"flex fle gap-3 flex-wrap"}>
                      <div className={"flex flex-col"}>

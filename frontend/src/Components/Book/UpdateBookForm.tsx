@@ -6,7 +6,7 @@ import {updateBook} from "../../Services/BookService.ts";
 import {toast} from "react-toastify";
 import type {book} from "../../Types/Book.ts";
 
-export default function UpdateBookForm(bookToUpdateProp: {bookInfo:book|undefined}){
+export default function UpdateBookForm(bookToUpdateProp: {bookInfo:book|undefined,manageEditing:()=>void}){
     const {register,handleSubmit,formState:{errors,isSubmitting}} = useForm<BookRequest>({
         defaultValues :{
             title:bookToUpdateProp.bookInfo?.title,
@@ -43,9 +43,9 @@ export default function UpdateBookForm(bookToUpdateProp: {bookInfo:book|undefine
 
 
     return (
-        <div className={"flex flex-col justify-center ml-18 mb-5"}>
+        <div className={"flex flex-col justify-center  mb-5"}>
             <h1 className={"text-center mr-10 text-xl mb-3"}>Update an existing book</h1>
-            <div className={"flex border-2 rounded-2xl p-2 w-250 bg-yellow-100"}>
+            <div className={"flex border-2 rounded-2xl self-center p-2 w-250 bg-yellow-100"}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className={"flex fle gap-3 flex-wrap"}>
                         <div className={"flex flex-col"}>
@@ -89,6 +89,8 @@ export default function UpdateBookForm(bookToUpdateProp: {bookInfo:book|undefine
                         </select>
                         <button type={"submit"} className={"border-2 pr-2 pl-2 ml-1 bg-blue-400 transition delay-75 ease-in-out hover:bg-blue-600 max-h-7 w-30"}
                         >Update</button>
+                        <button className={"border-2 pr-2 pl-2 ml-1 bg-red-500 transition delay-75 ease-in-out hover:bg-red-600 max-h-7 w-30"}
+                        onClick={bookToUpdateProp.manageEditing}>Close</button>
                     </div>
                 </form>
             </div>

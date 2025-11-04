@@ -33,7 +33,7 @@ export default function DisplayBooks(){
        }
     },[isError,error])
 
-    const handleEditing:MouseEventHandler<HTMLButtonElement> = () =>{
+    const handlePosting:MouseEventHandler<HTMLButtonElement> = () =>{
         if (!isPosting){
             setPosting(true);
         }else {
@@ -41,7 +41,7 @@ export default function DisplayBooks(){
         }
     }
 
-    const handleUpdating = (book:Book) =>{
+    const handleUpdating = (book?:Book) =>{
         if (!isUpdating){
             setUpdating(true);
             setToUpdate(book);
@@ -53,12 +53,12 @@ export default function DisplayBooks(){
 
     return isLoading ? (
         <p>Loading...</p>
-    ):(<div className={" ml-6 mr-6"}>
+    ):(<div className={"m-auto"}>
             <button className={"text-xl border-2 rounded-2xl pl-2 pr-2 mb-10 mt-10 ml-20 bg-blue-200 transition delay-75 ease-in-out hover:bg-blue-400"}
-            onClick={handleEditing}>Add book</button>
-            {(isPosting) ? <PostBookForm/> : <></>}
-            {(isUpdating)?<UpdateBookForm bookInfo={toUpdate}/>:<></>}
-            <div className={"flex flex-wrap flex-row gap-15 mt-10"}>
+            onClick={handlePosting}>Add book</button>
+            {(isPosting) ? <PostBookForm /> : <></>}
+            {(isUpdating)?<UpdateBookForm bookInfo={toUpdate} manageEditing = {handleUpdating}/>:<></>}
+            <div className={"flex flex-wrap justify-center flex-row gap-15 mt-10"}>
                 {data.map((book:book) =>
                     <BookElement key={book.id} bookInfo={book} setUpdating={handleUpdating} />
                 )}

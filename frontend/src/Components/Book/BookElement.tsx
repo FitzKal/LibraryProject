@@ -35,8 +35,10 @@ export default function BookElement({bookInfo,setUpdating}:bookElementProp){
         <button className={"text-l border-2 rounded-2xl pl-1 pr-1 w-20 bg-red-800 " +
             "text-white transition delay-50 ease-in-out hover:bg-red-500"}
                 onClick={()=>handleDelete(bookInfo.id)}>Delete</button>
-        <button className={"text-l border-2 rounded-2xl ml-10 pl-1 pr-1 w-20 bg-blue-800 " +
-            "text-white transition delay-50 ease-in-out hover:bg-blue-500"}
-                onClick={() => setUpdating(bookInfo)}>Edit</button>
+        {currentUser.username === bookInfo.username || currentUser.role==="ADMIN"
+            ? <button className={"text-l border-2 rounded-2xl ml-10 pl-1 pr-1 w-20 bg-blue-800 " +
+                "text-white transition delay-50 ease-in-out hover:bg-blue-500"}
+                      onClick={() => setUpdating(bookInfo)}>Edit</button>:<></> }
+
     </div>);
 }
