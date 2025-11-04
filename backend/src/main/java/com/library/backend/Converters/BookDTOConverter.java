@@ -9,12 +9,15 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface BookDTOConverter {
     @Mapping(target = "username", ignore = true)
+    @Mapping(target = "id",ignore = true)
     BookResponseDTO bookResponseFromRequest(BookRequestDTO bookRequestDTO);
 
     @Mapping(target = "user", ignore = true)
+    @Mapping(target = "id",ignore = true)
     Book bookFromRequest(BookRequestDTO bookRequestDTO);
 
     @Mapping(target = "username", ignore = true)
+    @Mapping(target = "id",ignore = true)
     BookResponseDTO BookToResponse(Book book);
 
 }
