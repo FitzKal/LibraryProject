@@ -1,11 +1,10 @@
 import {type SubmitHandler, useForm} from "react-hook-form";
-import type {BookRequest, UserEditRequest} from "../../Types/FormTypes.ts";
+import type {UserEditRequest} from "../../Types/FormTypes.ts";
 import {userStore} from "../../Stores/UserStore.ts";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
-import type {book} from "../../Types/Book.ts";
-import {updateBook} from "../../Services/BookService.ts";
 import {toast} from "react-toastify";
 import type {UserResponse} from "../../Types/User.ts";
+import {userUpdate} from "../../Services/AdminService.ts";
 
 export default function UserEditForm(props:{userToUpdate:UserResponse|undefined,handleClose:(user:UserResponse) => void}){
 
@@ -19,11 +18,11 @@ export default function UserEditForm(props:{userToUpdate:UserResponse|undefined,
     const queryClient = useQueryClient();
 
     const updateMutation = useMutation({
-        mutationFn:(data:book) =>
-            updateBook(currentUser.accessToken,data,data.id,currentUser.username),
+        mutationFn:(data:UserEditRequest) =>
+            userUpdate(currentUser.accessToken,props.userToUpdate?.userId,data),
         onSuccess:() =>{
-            toast.success("The chosen book was updated!");
-            queryClient.invalidateQueries({queryKey:["books"]});
+            toast.success("The chosen user was updated!");
+            queryClient.invalidateQueries({queryKey:["users"]});
         },
         onError:(error)=>{
             if (error instanceof Error){
@@ -35,7 +34,7 @@ export default function UserEditForm(props:{userToUpdate:UserResponse|undefined,
 
     })
 
-    const onSubmit: SubmitHandler<BookRequest> = async (data) => {
+    const onSubmit: SubmitHandler<UserEditRequest> = async (data:UserEditRequest) => {
         updateMutation.mutate(data)
     }
 

@@ -1,4 +1,6 @@
 // ------------- GetAll -------------
+import type {UserEditRequest} from "../Types/FormTypes.ts";
+
 export const usersGetAll = async (accessToken:string) => {
     const res = await fetch("/api/admin",{
         headers:{
@@ -30,4 +32,26 @@ export const userDelete = async (accessToken:string,id:number) =>{
         const message = await res.text();
         throw new Error(message || "Request could not be completed");
     }
+}
+
+// ------------- Update -------------
+
+export const userUpdate = async (accessToken:string, id:number, data:UserEditRequest)=>{
+    const res = await fetch(`/api/admin/${id}`,{
+        method:"PUT",
+        headers:{
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type" : "application/json",
+        },
+        body:JSON.stringify(data)
+    });
+    if (res.ok){
+        const response = await res.json();
+        console.log(response);
+        return response;
+    }else{
+        const message = await res.text();
+        throw new Error(message || "Could not complete request");
+    }
+
 }
