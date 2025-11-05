@@ -89,3 +89,19 @@ export const updateBook = async (accessToken:string,updateRequest:book,id:number
         throw new Error(message || "You are not the owner of the book, or don't have permission to edit the book");
     }
 }
+
+// ------------- GetUserBooks -------------
+
+export const getUserBooks = async (accessToken:string) =>{
+    const res = await fetch("/api/books/myBooks",{
+        headers:{Authorization:`Bearer ${accessToken}`},
+    });
+    if (res.ok){
+        const response = await res.json();
+        console.log(response);
+        return response;
+    }else {
+        const message = await res.text();
+        throw new Error(message || "Request could not be completed");
+    }
+}
