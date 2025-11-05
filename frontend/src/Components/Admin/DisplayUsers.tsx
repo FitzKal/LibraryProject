@@ -32,9 +32,20 @@ export default function DisplayUsers(){
 
     return isLoading ? (
         <p>Loading...</p>
-    ):(<div>
-        {data.map((user:UserResponse) =>
-        <User key={user.userId} userInfo = {user} />
-            )}
-    </div>)
+    ):(<div className="flex justify-center w-auto ml-3">
+            <table className="table-auto w-250 border-collapse">
+                <thead className={"border-b-2"}>
+                <tr>
+                    <th scope="col" className="text-left p-2 border-b">ID</th>
+                    <th scope="col" className="text-left p-2 border-b">Name</th>
+                    <th scope="col" className="text-left p-2 border-b">Role</th>
+                </tr>
+                </thead>
+                <tbody className={"border-b-2"}>
+                {(data ?? []).map(u => (
+                    <User key={u.userId} userInfo={u} />
+                ))}
+                </tbody>
+            </table>
+        </div>)
 }
