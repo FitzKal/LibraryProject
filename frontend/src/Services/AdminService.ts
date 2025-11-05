@@ -14,3 +14,20 @@ export const usersGetAll = async (accessToken:string) => {
             throw new Error(message || "Could not complete request");
         }
 }
+
+// ------------- Delete -------------
+
+export const userDelete = async (accessToken:string,id:number) =>{
+    const res = await fetch(`/api/admin/${id}`,{
+        method:"DELETE",
+        headers:{
+            Authorization:`Bearer ${accessToken}`,
+        }
+    });
+    if (res.ok){
+        return await res.text();
+    }else {
+        const message = await res.text();
+        throw new Error(message || "Request could not be completed");
+    }
+}
