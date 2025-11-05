@@ -10,6 +10,8 @@ import RegisterForm from "./Components/Auth/RegisterForm.tsx";
 import HomePage from "./Components/HomePage.tsx";
 import DisplayBooks from "./Components/Book/DisplayBooks.tsx";
 import BookPage from "./Components/Book/BookPage.tsx";
+import DisplayUsers from "./Components/Admin/DisplayUsers.tsx";
+import MyBooks from "./Components/Book/MyBooks.tsx";
 
 const router = createBrowserRouter([
     {
@@ -37,6 +39,14 @@ const router = createBrowserRouter([
                 path:"/dashboard/books/:param",
                 element:<BookPage />
             },
+            {
+                path:"/dashboard/admin",
+                element:<DisplayUsers/>
+            },
+            {
+                path:"/dashboard/myBooks",
+                element:<MyBooks />
+            }
         ]
     },
     {
