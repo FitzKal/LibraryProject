@@ -64,7 +64,6 @@ public class BookService {
         }catch (Exception e){
             System.out.println(e.getMessage());
         }*/
-
         return list;
     }
 
@@ -97,6 +96,18 @@ public class BookService {
         }
 
     }
+
+    public List<BookResponseDTO> getUsersooks(HttpServletRequest request){
+        var user = getUserFromRequest(request);
+        return bookRepository.findAll().stream()
+                .map(book -> {
+                    var response = bookDTOConverter.BookToResponse(book);
+                    response.setUsername(book.getUser().getUsername());
+                    return response;
+                })
+                .filter(book->book.getUsername().equals(user.getUsername())).toList();
+    }
+
 
     private User getUserFromRequest(HttpServletRequest request){
         var tokenFromRequest = jwtService.extractTokenFromRequest(request);

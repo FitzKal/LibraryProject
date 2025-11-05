@@ -39,7 +39,6 @@ public class AdminController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-
     public ResponseEntity<UserResponseDto> updateUser(@NonNull @PathVariable Long id,
                                                         @NonNull @RequestBody UserRequestDTO userRequestDTO){
         return ResponseEntity.ok(adminService.updateUser(id,userRequestDTO));
