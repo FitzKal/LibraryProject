@@ -62,7 +62,6 @@ export default function DisplayBooks(){
                 {data.map((book:book) =>
                     <BookElement key={book.id} bookInfo={book} setUpdating={handleUpdating} />
                 )}
-
             </div>
         </div>
     );

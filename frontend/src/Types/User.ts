@@ -13,3 +13,13 @@ export type UserAuthRequest = {
     username : string,
     password: string
 }
+
+export type UserResponse = {
+    userId?:number,
+    username:string,
+    role?: "ADMIN" | "USER",
+}
+
+export type userProp = {
+    userInfo : UserResponse
+}
