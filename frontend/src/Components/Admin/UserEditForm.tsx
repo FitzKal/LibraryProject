@@ -40,9 +40,9 @@ export default function UserEditForm(props:{userToUpdate:UserResponse|undefined,
 
 
     return (
-        <div className={"flex flex-col justify-center  mb-5"}>
-            <h1 className={"text-center mr-10 text-xl mb-3"}>Update an existing book</h1>
-            <div className={"flex border-2 rounded-2xl self-center p-2 w-250 bg-yellow-100"}>
+        <div className={"flex flex-col justify-center mb-10"}>
+            <h1 className={"text-center mr-10 text-xl mb-5 mt-10"}>Update an existing User</h1>
+            <div className={"flex border-2 rounded-2xl self-center  p-2 w-250 bg-yellow-100"}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className={"flex gap-3 flex-wrap"}>
                         <div className={"flex flex-col"}>
@@ -52,7 +52,7 @@ export default function UserEditForm(props:{userToUpdate:UserResponse|undefined,
                             })} type={"text"} placeholder={"title"} className={"border-2 bg-white text-center w-75"} />
                             {errors.username &&( <div className={"text-red-500 w-auto"}>{errors.username.message}</div>)}
                         </div>
-                        <label>Choose a genre: </label>
+                        <label>Choose a role: </label>
                         <select{...register("role",{
                             required:true,
                         })} className={"bg-white border-2 max-h-lh"}>
