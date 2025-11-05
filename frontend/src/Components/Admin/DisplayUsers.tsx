@@ -1,15 +1,19 @@
 import {userStore} from "../../Stores/UserStore.ts";
 import {useQuery} from "@tanstack/react-query";
 import {toast} from "react-toastify";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import type {UserResponse} from "../../Types/User.ts";
 import User from "./User.tsx";
 import {usersGetAll} from "../../Services/AdminService.ts";
+import UserEditForm from "./UserEditForm.tsx";
 
 
 export default function DisplayUsers(){
-    const currentUser = userStore.getState().user;
 
+    const [isUpdating, setIsUpdating] = useState<boolean>(false);
+    const [userToUpdate, setUserToUpdate] = useState<UserResponse>();
+
+    const currentUser = userStore.getState().user;
     const {data,error,isError,isLoading} = useQuery<UserResponse[]>({
         queryKey:["users"],
         queryFn: async () =>{
@@ -30,9 +34,20 @@ export default function DisplayUsers(){
         console.log(data);
     })
 
+    const handleUpdating = (user:UserResponse)=>{
+        if (!isUpdating){
+            setIsUpdating(true);
+            setUserToUpdate(user);
+        }else {
+            setIsUpdating(false);
+        }
+    }
+
     return isLoading ? (
         <p>Loading...</p>
-    ):(<div className="flex justify-center w-auto ml-3">
+    ):(<div className={"flex flex-col"}>
+        {isUpdating ? <UserEditForm userToUpdate = {userToUpdate}  handleClose = {handleUpdating}/> : <></>}
+        <div className="flex justify-center w-auto ml-3">
             <table className="table-auto w-250 border-collapse">
                 <thead className={"border-b-2"}>
                 <tr>
@@ -43,9 +58,10 @@ export default function DisplayUsers(){
                 </thead>
                 <tbody className={"border-b-2"}>
                 {(data ?? []).map(u => (
-                    <User key={u.userId} userInfo={u} />
+                    <User key={u.userId} userInfo={u} handleUpdating={handleUpdating} />
                 ))}
                 </tbody>
             </table>
-        </div>)
+        </div>
+    </div>)
 }

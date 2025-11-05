@@ -22,4 +22,5 @@ export type UserResponse = {
 
 export type userProp = {
     userInfo : UserResponse
+    handleUpdating: (user:UserResponse) => void;
 }

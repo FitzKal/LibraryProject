@@ -35,10 +35,11 @@ export default function User(prop:userProp){
             <td className="px-2 py-1 ">{prop.userInfo.username}</td>
             <td className="px-2 py-1 ">{prop.userInfo.role}</td>
             <td><button className={"rounded-2xl pr-2 pl-2 bg-blue-800 " +
-                "text-white transition delay-50 ease-in-out hover:bg-blue-500"}>Update</button></td>
-            <td ><button className={"pr-2 pl-2 rounded-2xl w-20 bg-red-800 " +
-                "text-white transition delay-50 ease-in-out hover:bg-red-500"}
-            onClick={() => handleDelete(prop.userInfo.userId)}>Delete</button></td>
+                "text-white transition delay-50 ease-in-out hover:bg-blue-500"}
+            onClick={()=> prop.handleUpdating(prop.userInfo)}>Update</button></td>
+            <td>{!(prop.userInfo.username === currentUser.username)?<button className={"pr-2 pl-2 rounded-2xl w-20 bg-red-800 " +
+                "text-white transition delay-50 ease-in-out hover:bg-red-500"} onClick={() => handleDelete(prop.userInfo.userId)}>Delete</button>
+            :<></>}</td>
         </tr>
     );
 }

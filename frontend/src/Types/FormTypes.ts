@@ -19,3 +19,8 @@ export type BookRequest = {
     genre?:"FANTASY" | "THRILLER" | "SCIFI" | "ROMANCE",
     username:string
 }
+
+export type UserEditRequest = {
+    username:string,
+    role:"ADMIN" | "USER"
+}
