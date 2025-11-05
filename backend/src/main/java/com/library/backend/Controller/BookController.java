@@ -50,4 +50,8 @@ public class BookController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/myBooks")
+    public ResponseEntity<List<BookResponseDTO>> userBooks(HttpServletRequest request){
+        return ResponseEntity.ok(bookService.getUserBooks(request));
+    }
 }

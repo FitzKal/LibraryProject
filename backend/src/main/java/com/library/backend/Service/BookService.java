@@ -14,10 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.nio.file.Files;
 import java.util.List;
 
 @AllArgsConstructor
@@ -97,7 +93,7 @@ public class BookService {
 
     }
 
-    public List<BookResponseDTO> getUsersooks(HttpServletRequest request){
+    public List<BookResponseDTO> getUserBooks(HttpServletRequest request){
         var user = getUserFromRequest(request);
         return bookRepository.findAll().stream()
                 .map(book -> {
