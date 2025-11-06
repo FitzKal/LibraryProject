@@ -4,65 +4,88 @@ import com.library.backend.DTOs.UserRequestDTO;
 import com.library.backend.DTOs.UserResponseDto;
 import com.library.backend.Service.AdminService;
 import com.library.backend.models.Role;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 class AdminControllerTest {
+
+    @Mock
+    private AdminService adminService;
+
+    @InjectMocks
+    private AdminController undertest;
+
+    @BeforeEach
+    public void SetUp(){
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     void testGetUserByIdShouldReturnOk() {
         // Given
-        var svc = mock(AdminService.class);
-        var controller = new AdminController(svc);
-        var dto = new UserResponseDto(1L, "dzsoni", Role.USER);
-        given(svc.getUserById(1L)).willReturn(dto);
+        long id = 1L;
+        var dto = new UserResponseDto(id, "dzsoni", Role.USER);
+        given(adminService.getUserById(id)).willReturn(dto);
 
         // When
-        ResponseEntity<UserResponseDto> res = controller.getUserById(1L);
+        ResponseEntity<UserResponseDto> res = undertest.getUserById(id);
 
         // Then
         assertThat(res.getBody()).isEqualTo(dto);
-        verify(svc).getUserById(1L);
+        verify(adminService).getUserById(id);
     }
 
     @Test
     void testGetAllUsersShouldReturnList() {
         // Given
-        var svc = mock(AdminService.class);
-        var controller = new AdminController(svc);
         var list = List.of(new UserResponseDto(1L, "a", Role.USER));
-        given(svc.getAll()).willReturn(list);
+        given(adminService.getAll()).willReturn(list);
 
         // When
-        var res = controller.getAllUsers();
+        var res = undertest.getAllUsers();
 
         // Then
         assertThat(res.getBody()).isEqualTo(list);
-        verify(svc).getAll();
+        verify(adminService).getAll();
     }
 
     @Test
     void testUpdateUserShouldDelegate() {
         // Given
-        var svc = mock(AdminService.class);
-        var controller = new AdminController(svc);
+        long id = 5L;
         var req = new UserRequestDTO();
         req.setUsername("new");
         req.setRole(Role.ADMIN);
-        var dto = new UserResponseDto(5L, "new", Role.ADMIN);
-        given(svc.updateUser(5L, req)).willReturn(dto);
+        var dto = new UserResponseDto(id, "new", Role.ADMIN);
+        given(adminService.updateUser(id, req)).willReturn(dto);
 
         // When
-        var res = controller.updateUser(5L, req);
+        var res = undertest.updateUser(id, req);
 
         // Then
         assertThat(res.getBody()).isEqualTo(dto);
-        verify(svc).updateUser(5L, req);
+        verify(adminService).updateUser(id, req);
+    }
+
+    @Test
+    void testDeleteUserShouldDelegate() {
+        // Given
+        long id = 7L;
+
+        // When
+         undertest.deleteUser(id);
+
+        // Then
+        verify(adminService).deleteUser(id);
     }
 }
