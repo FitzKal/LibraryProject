@@ -7,7 +7,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -18,9 +21,31 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 class JWTFilterTest {
+
+    @Mock
+    private JWTService jwtService;
+
+    @Mock
+    private ApplicationContext ctx;
+
+    @Mock
+    private CustomUserDetailService uds;
+
+    @Mock
+    private HttpServletRequest req;
+
+    @Mock
+    private HttpServletResponse res;
+
+    @Mock
+    private FilterChain chain;
+
+    @InjectMocks
+    private JWTFilter underTest;
 
     @AfterEach
     void tearDown() {
@@ -29,14 +54,6 @@ class JWTFilterTest {
 
     @Test
     void doFilterInternal_shouldSetAuthentication_whenValidBearerToken() throws Exception {
-        // Mocks
-        JWTService jwtService = mock(JWTService.class);
-        ApplicationContext ctx = mock(ApplicationContext.class);
-        CustomUserDetailService uds = mock(CustomUserDetailService.class);
-        HttpServletRequest req = mock(HttpServletRequest.class);
-        HttpServletResponse res = mock(HttpServletResponse.class);
-        FilterChain chain = mock(FilterChain.class);
-
         // Given
         given(req.getHeader("Authorization")).willReturn("Bearer tok");
         given(jwtService.extractTokenFromRequest(req)).willReturn("tok");
@@ -47,10 +64,8 @@ class JWTFilterTest {
         given(uds.loadUserByUsername("alice")).willReturn(user);
         given(jwtService.validateToken("tok", user)).willReturn(true);
 
-        JWTFilter filter = new JWTFilter(jwtService, ctx);
-
         // When
-        filter.doFilterInternal(req, res, chain);
+        underTest.doFilterInternal(req, res, chain);
 
         // Then
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNotNull();
@@ -60,37 +75,29 @@ class JWTFilterTest {
 
     @Test
     void doFilterInternal_shouldSkip_whenNoAuthorizationHeader() throws Exception {
-        JWTService jwtService = mock(JWTService.class);
-        ApplicationContext ctx = mock(ApplicationContext.class);
-        HttpServletRequest req = mock(HttpServletRequest.class);
-        HttpServletResponse res = mock(HttpServletResponse.class);
-        FilterChain chain = mock(FilterChain.class);
-
+        // Given
         given(req.getHeader("Authorization")).willReturn(null);
 
-        JWTFilter filter = new JWTFilter(jwtService, ctx);
-        filter.doFilterInternal(req, res, chain);
+        // When
+        underTest.doFilterInternal(req, res, chain);
 
+        // Then
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
         verify(chain).doFilter(req, res);
     }
 
     @Test
     void doFilterInternal_shouldNotAuthenticate_whenTokenBlacklisted() throws Exception {
-        JWTService jwtService = mock(JWTService.class);
-        ApplicationContext ctx = mock(ApplicationContext.class);
-        HttpServletRequest req = mock(HttpServletRequest.class);
-        HttpServletResponse res = mock(HttpServletResponse.class);
-        FilterChain chain = mock(FilterChain.class);
-
+        // Given
         given(req.getHeader("Authorization")).willReturn("Bearer tok");
         given(jwtService.extractTokenFromRequest(req)).willReturn("tok");
         given(jwtService.getUsernameFromToken("tok")).willReturn("alice");
         given(jwtService.getBlackList()).willReturn(new ArrayList<>(List.of("tok")));
 
-        JWTFilter filter = new JWTFilter(jwtService, ctx);
-        filter.doFilterInternal(req, res, chain);
+        // When
+        underTest.doFilterInternal(req, res, chain);
 
+        // Then
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
         verify(chain).doFilter(req, res);
     }

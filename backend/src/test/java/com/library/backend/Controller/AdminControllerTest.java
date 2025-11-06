@@ -4,11 +4,11 @@ import com.library.backend.DTOs.UserRequestDTO;
 import com.library.backend.DTOs.UserResponseDto;
 import com.library.backend.Service.AdminService;
 import com.library.backend.models.Role;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -17,18 +17,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
+@ExtendWith(MockitoExtension.class)
 class AdminControllerTest {
 
     @Mock
     private AdminService adminService;
 
     @InjectMocks
-    private AdminController undertest;
-
-    @BeforeEach
-    public void SetUp(){
-        MockitoAnnotations.openMocks(this);
-    }
+    private AdminController underTest;
 
     @Test
     void testGetUserByIdShouldReturnOk() {
@@ -38,7 +34,7 @@ class AdminControllerTest {
         given(adminService.getUserById(id)).willReturn(dto);
 
         // When
-        ResponseEntity<UserResponseDto> res = undertest.getUserById(id);
+        ResponseEntity<UserResponseDto> res = underTest.getUserById(id);
 
         // Then
         assertThat(res.getBody()).isEqualTo(dto);
@@ -52,7 +48,7 @@ class AdminControllerTest {
         given(adminService.getAll()).willReturn(list);
 
         // When
-        var res = undertest.getAllUsers();
+        var res = underTest.getAllUsers();
 
         // Then
         assertThat(res.getBody()).isEqualTo(list);
@@ -70,7 +66,7 @@ class AdminControllerTest {
         given(adminService.updateUser(id, req)).willReturn(dto);
 
         // When
-        var res = undertest.updateUser(id, req);
+        var res = underTest.updateUser(id, req);
 
         // Then
         assertThat(res.getBody()).isEqualTo(dto);
@@ -83,7 +79,7 @@ class AdminControllerTest {
         long id = 7L;
 
         // When
-         undertest.deleteUser(id);
+         underTest.deleteUser(id);
 
         // Then
         verify(adminService).deleteUser(id);

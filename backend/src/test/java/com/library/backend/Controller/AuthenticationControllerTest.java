@@ -26,7 +26,7 @@ class AuthenticationControllerTest {
     private HttpServletRequest httpRequest;
 
     @InjectMocks
-    private AuthenticationController controller;
+    private AuthenticationController underTest;
 
     @Test
     void testLoginShouldReturnOkAndResponseBody() {
@@ -45,7 +45,7 @@ class AuthenticationControllerTest {
         given(authenticationService.Login(req)).willReturn(resp);
 
         // When
-        var entity = controller.login(req);
+        var entity = underTest.login(req);
 
         // Then
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -70,7 +70,7 @@ class AuthenticationControllerTest {
         given(authenticationService.Register(req)).willReturn(resp);
 
         // When
-        var entity = controller.register(req);
+        var entity = underTest.register(req);
 
         // Then
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -85,7 +85,7 @@ class AuthenticationControllerTest {
         given(authenticationService.Logout(httpRequest)).willReturn(message);
 
         // When
-        var entity = controller.logout(httpRequest);
+        var entity = underTest.logout(httpRequest);
 
         // Then
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);

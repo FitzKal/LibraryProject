@@ -28,7 +28,7 @@ class BookControllerTest {
     private HttpServletRequest httpRequest;
 
     @InjectMocks
-    private BookController controller;
+    private BookController underTest;
 
     @Test
     void testCreateBookShouldReturnCreatedAndResponseBody() {
@@ -54,7 +54,7 @@ class BookControllerTest {
         given(bookService.createBook(httpRequest, req)).willReturn(resp);
 
         // When
-        var entity = controller.createBook(httpRequest, req);
+        var entity = underTest.createBook(httpRequest, req);
 
         // Then
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -71,7 +71,7 @@ class BookControllerTest {
         given(bookService.getAllBooks()).willReturn(list);
 
         // When
-        var entity = controller.listAll();
+        var entity = underTest.listAll();
 
         // Then
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -87,7 +87,7 @@ class BookControllerTest {
         given(bookService.getBookById(id)).willReturn(resp);
 
         // When
-        var entity = controller.getBookById(id);
+        var entity = underTest.getBookById(id);
 
         // Then
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -111,7 +111,7 @@ class BookControllerTest {
         given(bookService.updateBook(httpRequest, id, req)).willReturn(resp);
 
         // When
-        var entity = controller.updateBook(id, req, httpRequest);
+        var entity = underTest.updateBook(id, req, httpRequest);
 
         // Then
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -127,7 +127,7 @@ class BookControllerTest {
         given(bookService.deleteBook(httpRequest, id)).willReturn(message);
 
         // When
-        var entity = controller.deleteBook(id, httpRequest);
+        var entity = underTest.deleteBook(id, httpRequest);
 
         // Then
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -144,7 +144,7 @@ class BookControllerTest {
         given(bookService.getUserBooks(httpRequest)).willReturn(list);
 
         // When
-        var entity = controller.userBooks(httpRequest);
+        var entity = underTest.userBooks(httpRequest);
 
         // Then
         assertThat(entity.getStatusCode()).isEqualTo(HttpStatus.OK);

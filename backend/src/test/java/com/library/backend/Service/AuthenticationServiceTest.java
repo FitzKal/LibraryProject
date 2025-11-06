@@ -6,19 +6,20 @@ import com.library.backend.Security.PasswordEncrypter;
 import com.library.backend.models.Role;
 import com.library.backend.models.User;
 import com.library.backend.repositories.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.*;
 
-
+@ExtendWith(MockitoExtension.class)
 class AuthenticationServiceTest {
 
     @Mock
@@ -29,13 +30,12 @@ class AuthenticationServiceTest {
     private JWTService jwtService;
     @Mock
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Mock
+    private HttpServletRequest httpReq;
+
     @InjectMocks
     private AuthenticationService underTest;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     public void testRegisterShouldEncodeAndSaveAndReturnToken() {
@@ -89,9 +89,6 @@ class AuthenticationServiceTest {
 
     @Test
     public void testLogoutShouldCallJwtBlacklistAndReturnMessage() {
-        // Given
-        var httpReq = mock(jakarta.servlet.http.HttpServletRequest.class);
-
         // When
         String msg = underTest.Logout(httpReq);
 

@@ -2,23 +2,28 @@ package com.library.backend.Service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 
+@ExtendWith(MockitoExtension.class)
 class JWTServiceTest {
+
+    @Mock
+    private HttpServletRequest req;
 
     @Test
     void extractTokenFromRequest_shouldReturnToken_whenBearerHeaderPresent() {
         // Given
-        var req = mock(HttpServletRequest.class);
         given(req.getHeader("Authorization")).willReturn("Bearer abc.def.ghi");
-        var service = new JWTService();
+        var underTest = new JWTService();
 
         // When
-        var token = service.extractTokenFromRequest(req);
+        var token = underTest.extractTokenFromRequest(req);
 
         // Then
         assertThat(token).isEqualTo("abc.def.ghi");
@@ -26,47 +31,43 @@ class JWTServiceTest {
 
     @Test
     void extractTokenFromRequest_shouldThrow_whenHeaderMissing() {
-        var req = mock(HttpServletRequest.class);
         given(req.getHeader("Authorization")).willReturn(null);
-        var service = new JWTService();
+        var underTest = new JWTService();
 
-        assertThrows(RuntimeException.class, () -> service.extractTokenFromRequest(req));
+        assertThrows(RuntimeException.class, () -> underTest.extractTokenFromRequest(req));
     }
 
     @Test
     void extractTokenFromRequest_shouldThrow_whenHeaderNotBearer() {
-        var req = mock(HttpServletRequest.class);
         given(req.getHeader("Authorization")).willReturn("Basic something");
-        var service = new JWTService();
+        var underTest = new JWTService();
 
-        assertThrows(RuntimeException.class, () -> service.extractTokenFromRequest(req));
+        assertThrows(RuntimeException.class, () -> underTest.extractTokenFromRequest(req));
     }
 
     @Test
     void extractTokenFromRequest_shouldAllowEmptyTokenAfterPrefix() {
-        var req = mock(HttpServletRequest.class);
         given(req.getHeader("Authorization")).willReturn("Bearer ");
-        var service = new JWTService();
+        var underTest = new JWTService();
 
-        var token = service.extractTokenFromRequest(req);
+        var token = underTest.extractTokenFromRequest(req);
         assertThat(token).isEmpty();
     }
 
     @Test
     void addToBlackList_shouldAddExtractedToken() {
-        var req = mock(HttpServletRequest.class);
         given(req.getHeader("Authorization")).willReturn("Bearer token-123");
-        var service = new JWTService();
+        var underTest = new JWTService();
 
-        service.addToBlackList(req);
-        assertThat(service.getBlackList()).contains("token-123");
+        underTest.addToBlackList(req);
+        assertThat(underTest.getBlackList()).contains("token-123");
     }
 
     @Test
     void generateToken_and_getUsernameFromToken_shouldRoundTrip() {
-        var service = new JWTService();
-        var token = service.generateToken("alice");
-        var username = service.getUsernameFromToken(token);
+        var underTest = new JWTService();
+        var token = underTest.generateToken("alice");
+        var username = underTest.getUsernameFromToken(token);
         assertThat(username).isEqualTo("alice");
     }
 }

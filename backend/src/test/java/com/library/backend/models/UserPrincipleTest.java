@@ -24,16 +24,16 @@ class UserPrincipleTest {
                 .role(Role.ADMIN)
                 .build();
 
-        UserPrinciple principal = new UserPrinciple(user);
+        UserPrinciple underTest = new UserPrinciple(user);
 
-        assertThat(principal.getUsername()).isEqualTo("alice");
-        assertThat(principal.getPassword()).isEqualTo("enc");
-        assertThat(principal.isAccountNonExpired()).isTrue();
-        assertThat(principal.isAccountNonLocked()).isTrue();
-        assertThat(principal.isCredentialsNonExpired()).isTrue();
-        assertThat(principal.isEnabled()).isTrue();
+        assertThat(underTest.getUsername()).isEqualTo("alice");
+        assertThat(underTest.getPassword()).isEqualTo("enc");
+        assertThat(underTest.isAccountNonExpired()).isTrue();
+        assertThat(underTest.isAccountNonLocked()).isTrue();
+        assertThat(underTest.isCredentialsNonExpired()).isTrue();
+        assertThat(underTest.isEnabled()).isTrue();
 
-        List<SimpleGrantedAuthority> auth = principal.getAuthorities().stream()
+        List<SimpleGrantedAuthority> auth = underTest.getAuthorities().stream()
                 .map(a -> (SimpleGrantedAuthority) a)
                 .toList();
         assertThat(auth).containsExactly(new SimpleGrantedAuthority("ROLE_ADMIN"));

@@ -6,13 +6,12 @@ import com.library.backend.DTOs.UserResponseDto;
 import com.library.backend.models.Role;
 import com.library.backend.models.User;
 import com.library.backend.repositories.UserRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,19 +20,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class AdminServiceTest {
 
     @Mock
     private UserRepository userRepository;
     @Mock
-    private UserDTOConverter userDTOConverter = Mappers.getMapper(UserDTOConverter.class);
+    private UserDTOConverter userDTOConverter;
     @InjectMocks
     private AdminService underTest;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     void testGetUserByIdShouldReturnDto() {

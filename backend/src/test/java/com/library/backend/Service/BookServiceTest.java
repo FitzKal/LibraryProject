@@ -8,12 +8,11 @@ import com.library.backend.models.User;
 import com.library.backend.repositories.BookRepository;
 import com.library.backend.repositories.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -23,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class BookServiceTest {
 
     @Mock
@@ -32,24 +32,20 @@ class BookServiceTest {
     private UserRepository userRepository;
 
     @Mock
-    private BookDTOConverter bookDTOConverter = Mappers.getMapper(BookDTOConverter.class);
+    private BookDTOConverter bookDTOConverter;
 
     @Mock
     private JWTService jwtService;
 
+    @Mock
+    private HttpServletRequest req;
+
     @InjectMocks
     private BookService underTest;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
 
     @Test
     public void testUpdateBookShouldCheckOwnershipAndSave() {
         // Given
-        HttpServletRequest req = mock(HttpServletRequest.class);
         Long id = 11L;
 
         given(jwtService.extractTokenFromRequest(req)).willReturn("t");
@@ -83,12 +79,7 @@ class BookServiceTest {
     @Test
     public void testUpdateBookShouldThrowWhenNotFound() {
         // Given
-        HttpServletRequest req = mock(HttpServletRequest.class);
         Long id = 999L;
-
-        given(jwtService.extractTokenFromRequest(req)).willReturn("t");
-        given(jwtService.getUsernameFromToken("t")).willReturn("someone");
-        given(userRepository.findByUsername("someone")).willReturn(new User());
 
         given(bookRepository.findById(id)).willReturn(Optional.empty());
 
@@ -101,7 +92,6 @@ class BookServiceTest {
     @Test
     public void testDeleteBookShouldCheckOwnershipAndDelete() {
         // Given
-        HttpServletRequest req = mock(HttpServletRequest.class);
         given(jwtService.extractTokenFromRequest(req)).willReturn("t");
         given(jwtService.getUsernameFromToken("t")).willReturn("owner");
         var owner = User.builder().userId(1L).username("owner")
@@ -119,7 +109,6 @@ class BookServiceTest {
     @Test
     public void testDeleteBookShouldAllowAdmin() {
         // Given
-        HttpServletRequest req = mock(HttpServletRequest.class);
         given(jwtService.extractTokenFromRequest(req)).willReturn("t");
         given(jwtService.getUsernameFromToken("t")).willReturn("owner");
         var owner = User.builder().userId(1L).username("owner").role(Role.ADMIN)
@@ -137,7 +126,6 @@ class BookServiceTest {
     @Test
     public void testUpdateBookShouldThrowWhenNotOwnerOrAdmin() {
         // Given
-        HttpServletRequest req = mock(HttpServletRequest.class);
         Long id = 2L;
 
         given(jwtService.extractTokenFromRequest(req)).willReturn("t");
