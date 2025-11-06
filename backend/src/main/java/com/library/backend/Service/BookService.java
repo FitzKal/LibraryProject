@@ -71,6 +71,7 @@ public class BookService {
             bookToUpdate.setDescription(bookRequestDTO.getDescription());
             bookToUpdate.setPictureSRC(bookRequestDTO.getPictureSRC());
             bookToUpdate.setGenre(bookRequestDTO.getGenre());
+            bookToUpdate.setAuthor(bookRequestDTO.getAuthor());
             bookRepository.save(bookToUpdate);
             return bookDTOConverter.BookToResponse(bookToUpdate);
         }else {
