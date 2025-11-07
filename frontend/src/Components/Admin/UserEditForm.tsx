@@ -8,18 +8,23 @@ import {userUpdate} from "../../Services/AdminService.ts";
 
 export default function UserEditForm(props:{userToUpdate:UserResponse|undefined,handleClose:(user:UserResponse) => void}){
 
-    const {register,handleSubmit,formState:{errors,isSubmitting}} = useForm<UserEditRequest>({
+    const {register,handleSubmit,formState:{errors}} = useForm<UserEditRequest>({
         defaultValues :{
             username:props.userToUpdate?.username,
             role:props.userToUpdate?.role
         }
     });
-    const currentUser = userStore.getState().user;
     const queryClient = useQueryClient();
 
     const updateMutation = useMutation({
-        mutationFn:(data:UserEditRequest) =>
-            userUpdate(currentUser.accessToken,props.userToUpdate?.userId,data),
+        mutationFn:(data:UserEditRequest) => {
+            const token = userStore.getState().user?.accessToken;
+            const targetId = props.userToUpdate?.userId;
+            if (!token || targetId == null) {
+                throw new Error("Missing authentication or user id");
+            }
+            return userUpdate(token, targetId, data);
+        },
         onSuccess:() =>{
             toast.success("The chosen user was updated!");
             queryClient.invalidateQueries({queryKey:["users"]});
@@ -62,7 +67,7 @@ export default function UserEditForm(props:{userToUpdate:UserResponse|undefined,
                         <button type={"submit"} className={"border-2 pr-2 pl-2 ml-1 bg-blue-400 transition delay-75 ease-in-out hover:bg-blue-600 max-h-7 w-30"}
                         >Update</button>
                         <button className={"border-2 pr-2 pl-2 ml-1 bg-red-500 transition delay-75 ease-in-out hover:bg-red-600 max-h-7 w-30"}
-                         onClick={()=>props.handleClose(props.userToUpdate)}>Close</button>
+                         onClick={()=>{ if (props.userToUpdate) { props.handleClose(props.userToUpdate) } }}>Close</button>
                     </div>
                 </form>
             </div>
