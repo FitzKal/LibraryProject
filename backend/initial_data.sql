@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict mEdoOs3tNfRbacWzHFcTICBY74ZsvKtHIPvxi2ahDQaBx9LB70jRC8TJCuHiFF0
+\restrict LEwqdeQragHzjhXfA5BopdqMprb6XfDVhaHZab6eDaSIm9yCSkitEzwpBjwU5Ff
 
 -- Dumped from database version 15.14 (Debian 15.14-1.pgdg13+1)
 -- Dumped by pg_dump version 15.14 (Debian 15.14-1.pgdg13+1)
@@ -18,6 +18,18 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE ONLY public.book DROP CONSTRAINT fk9cv1tt952k857xoia51k1vj12;
+DROP INDEX public.flyway_schema_history_s_idx;
+ALTER TABLE ONLY public.users DROP CONSTRAINT users_pkey;
+ALTER TABLE ONLY public.users DROP CONSTRAINT ukr43af9ap4edm43mmtq01oddj6;
+ALTER TABLE ONLY public.book DROP CONSTRAINT ukg0286ag1dlt4473st1ugemd0m;
+ALTER TABLE ONLY public.flyway_schema_history DROP CONSTRAINT flyway_schema_history_pk;
+ALTER TABLE ONLY public.book DROP CONSTRAINT book_pkey;
+DROP SEQUENCE public.users_seq;
+DROP TABLE public.users;
+DROP TABLE public.flyway_schema_history;
+DROP SEQUENCE public.book_seq;
+DROP TABLE public.book;
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -150,7 +162,7 @@ COPY public.users (user_id, password, role, username) FROM stdin;
 -- Name: book_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.book_seq', 201, true);
+SELECT pg_catalog.setval('public.book_seq', 251, true);
 
 
 --
@@ -219,5 +231,5 @@ ALTER TABLE ONLY public.book
 -- PostgreSQL database dump complete
 --
 
-\unrestrict mEdoOs3tNfRbacWzHFcTICBY74ZsvKtHIPvxi2ahDQaBx9LB70jRC8TJCuHiFF0
+\unrestrict LEwqdeQragHzjhXfA5BopdqMprb6XfDVhaHZab6eDaSIm9yCSkitEzwpBjwU5Ff
 
