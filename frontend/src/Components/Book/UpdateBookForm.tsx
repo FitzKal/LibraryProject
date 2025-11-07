@@ -7,7 +7,7 @@ import {toast} from "react-toastify";
 import type {book} from "../../Types/Book.ts";
 
 export default function UpdateBookForm(bookToUpdateProp: {bookInfo:book|undefined,manageEditing:()=>void}){
-    const {register,handleSubmit,formState:{errors,isSubmitting}} = useForm<BookRequest>({
+    const {register,handleSubmit,formState:{errors}} = useForm<BookRequest>({
         defaultValues :{
             title:bookToUpdateProp.bookInfo?.title,
             description:bookToUpdateProp.bookInfo?.description,
@@ -16,12 +16,16 @@ export default function UpdateBookForm(bookToUpdateProp: {bookInfo:book|undefine
             genre:bookToUpdateProp.bookInfo?.genre
         }
     });
-    const currentUser = userStore.getState().user;
     const queryClient = useQueryClient();
 
     const updateMutation = useMutation({
-        mutationFn:(data:book) =>
-            updateBook(currentUser.accessToken,data,data.id,currentUser.username),
+        mutationFn:(data:book) => {
+            const token = userStore.getState().user?.accessToken;
+            if (!token || data.id == null) {
+                throw new Error("Missing authentication or book id");
+            }
+            return updateBook(token, data, data.id);
+        },
         onSuccess:() =>{
             toast.success("The chosen book was updated!");
             queryClient.invalidateQueries({queryKey:["books"]});
@@ -37,8 +41,12 @@ export default function UpdateBookForm(bookToUpdateProp: {bookInfo:book|undefine
     })
 
     const onSubmit: SubmitHandler<BookRequest> = async (data) => {
-        data.id = bookToUpdateProp.bookInfo?.id
-        updateMutation.mutate(data)
+        data.id = bookToUpdateProp.bookInfo?.id;
+        if (data.id == null) {
+            toast.error("Cannot update: missing book id");
+            return;
+        }
+        updateMutation.mutate(data as book);
     }
 
 

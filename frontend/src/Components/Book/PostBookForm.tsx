@@ -6,8 +6,7 @@ import {postBook} from "../../Services/BookService.ts";
 import {toast} from "react-toastify";
 
 export default function PostBookForm(){
-    const {register,handleSubmit,formState:{errors,isSubmitting},reset} = useForm<BookRequest>();
-    const currentUser = userStore.getState().user;
+    const {register,handleSubmit,formState:{errors},reset} = useForm<BookRequest>();
     const queryClient = useQueryClient();
 
     //TODO: Maybe implement isSubmitting
@@ -17,8 +16,15 @@ export default function PostBookForm(){
     }
 
     const mutation = useMutation({
-        mutationFn:(data:BookRequest) =>
-            postBook(currentUser.accessToken,data,currentUser.username),
+        mutationFn:(data:BookRequest) => {
+            const state = userStore.getState().user;
+            const token = state?.accessToken;
+            const username = state?.username;
+            if (!token || !username) {
+                throw new Error("Not authenticated");
+            }
+            return postBook(token, data, username);
+        },
         onSuccess:() =>{
             toast.success("Book posted successfully");
             reset();
