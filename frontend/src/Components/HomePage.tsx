@@ -10,7 +10,13 @@ export default function HomePage(){
     const currentUser = userStore.getState().user;
 
     const logoutMutation = useMutation({
-        mutationFn: () => userLogout(currentUser.accessToken),
+        mutationFn: () => {
+            const token = userStore.getState().user?.accessToken;
+            if (!token) {
+                throw new Error("Not authenticated");
+            }
+            return userLogout(token);
+        },
         onSuccess:() =>{
             userStore.getState().stateLogout();
             navigate("/login");
@@ -31,7 +37,7 @@ export default function HomePage(){
 
     return(
         <div>
-            <h1 className={"text-[5rem] text-center mt-60"}>Welcome <strong className={"text-blue-700"}>{userStore.getState().user.username}</strong></h1>
+            <h1 className={"text-[5rem] text-center mt-60"}>Welcome <strong className={"text-blue-700"}>{currentUser?.username ?? ""}</strong></h1>
             <div className={"flex justify-center mt-20"}>
                 <button className={"text-2xl border-2 rounded-2xl pl-2 pr-2 bg-red-800 " +
                     "text-white transition delay-50 ease-in-out hover:bg-red-500"}

@@ -9,7 +9,7 @@ export default function Navbar(){
         <div className={"pt-0.5"}>
         <div className={"NavBarContainer bg-[#8f571b] pb-0.5 flex justify-between rounded-2xl"}>
         <h1 className={"text-3xl text-white ml-3 "}>Library</h1>
-            {currentUser.role == "ADMIN" ? <div>
+            {currentUser?.role == "ADMIN" ? <div>
                 <Link to={"/dashboard/admin"}
                       className="text-2xl text-white px-3 py-0.5 rounded-2xl
                 transition delay-50 ease-in-out
