@@ -5,8 +5,12 @@ docker build --no-cache .
 If not the first docker compose (after having made changes in either the frontend or backend):
 docker compose up -d --build --force-recreate
 
-To create a backup db dump:
+
+To create a backup db dump(on mac/linux):
 docker exec <my-postgres-db> pg_dump --clean -U <postgres> <mydb> > initial_data.sql
 
-To mount the created dump:
+
+To mount the created dump (on mac/linux):
 docker exec -i <db_container_name> psql -U <user> <db_name> < /path/to/initial_data.sql
+on windows:
+Get-Content -Raw .\initial_data.sql | docker exec -i library_db psql -U postgres library
