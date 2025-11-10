@@ -79,7 +79,7 @@ class AdminControllerTest {
         long id = 7L;
 
         // When
-         underTest.deleteUser(id);
+        underTest.deleteUser(id);
 
         // Then
         verify(adminService).deleteUser(id);
