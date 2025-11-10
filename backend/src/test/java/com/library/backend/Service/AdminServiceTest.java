@@ -18,7 +18,10 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class AdminServiceTest {
@@ -68,8 +71,15 @@ class AdminServiceTest {
     @Test
     void testGetAllUsersShouldReturnListOfDtos() {
         // Given
-        var u1 = new User(); u1.setUserId(1L); u1.setUsername("a"); u1.setRole(Role.USER);
-        var u2 = new User(); u2.setUserId(2L); u2.setUsername("b"); u2.setRole(Role.ADMIN);
+        var u1 = new User();
+        u1.setUserId(1L);
+        u1.setUsername("a");
+        u1.setRole(Role.USER);
+
+        var u2 = new User();
+        u2.setUserId(2L);
+        u2.setUsername("b");
+        u2.setRole(Role.ADMIN);
 
         var d1 = new UserResponseDto(1L, "a", Role.USER);
         var d2 = new UserResponseDto(2L, "b", Role.ADMIN);
@@ -93,6 +103,7 @@ class AdminServiceTest {
         // Given
         Long id = 10L;
         given(userRepository.existsById(id)).willReturn(true);
+
         // When
         underTest.deleteUser(id);
 

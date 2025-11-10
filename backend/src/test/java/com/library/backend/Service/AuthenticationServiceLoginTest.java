@@ -15,7 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceLoginTest {
@@ -33,10 +33,18 @@ class AuthenticationServiceLoginTest {
     private AuthenticationService underTest;
 
     @Test
-    void login_shouldReturnToken_whenPasswordMatches() {
+    void loginShouldReturnTokenWhenPasswordMatches() {
         // Given
-        AuthRequestDto req = AuthRequestDto.builder().username("alice").password("plain").build();
-        User u = User.builder().username("alice").password("enc").role(Role.ADMIN).build();
+        AuthRequestDto req = AuthRequestDto.builder()
+                .username("alice")
+                .password("plain")
+                .build();
+        User u = User.builder()
+                .username("alice")
+                .password("enc")
+                .role(Role.ADMIN)
+                .build();
+
         given(userRepository.findByUsername("alice")).willReturn(u);
         given(passwordEncrypter.passwordEncoder()).willReturn(bCryptPasswordEncoder);
         given(bCryptPasswordEncoder.matches("plain", "enc")).willReturn(true);
@@ -52,17 +60,33 @@ class AuthenticationServiceLoginTest {
     }
 
     @Test
-    void login_shouldThrow_whenUserMissingOrPasswordMismatch() {
-        AuthRequestDto req = AuthRequestDto.builder().username("ghost").password("p").build();
+    void loginShouldThrowWhenUserMissingOrPasswordMismatch() {
+        // Test 1: User missing
+        AuthRequestDto req = AuthRequestDto.builder()
+                .username("ghost")
+                .password("p")
+                .build();
+
         given(userRepository.findByUsername("ghost")).willReturn(null);
+
         assertThrows(RuntimeException.class, () -> underTest.Login(req));
 
+        // Test 2: Password mismatch
+        User u = User.builder()
+                .username("bob")
+                .password("enc")
+                .role(Role.USER)
+                .build();
 
-        User u = User.builder().username("bob").password("enc").role(Role.USER).build();
         given(userRepository.findByUsername("bob")).willReturn(u);
         given(passwordEncrypter.passwordEncoder()).willReturn(bCryptPasswordEncoder);
         given(bCryptPasswordEncoder.matches("p", "enc")).willReturn(false);
-        AuthRequestDto req2 = AuthRequestDto.builder().username("bob").password("p").build();
+
+        AuthRequestDto req2 = AuthRequestDto.builder()
+                .username("bob")
+                .password("p")
+                .build();
+
         assertThrows(RuntimeException.class, () -> underTest.Login(req2));
     }
 }

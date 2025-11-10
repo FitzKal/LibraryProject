@@ -21,7 +21,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceMoreTest {
@@ -42,20 +42,33 @@ class BookServiceMoreTest {
     private BookService underTest;
 
     @Test
-    void createBook_shouldSaveAndReturnResponseWithUsername() {
+    void createBookShouldSaveAndReturnResponseWithUsername() {
         // Given
         given(jwtService.extractTokenFromRequest(req)).willReturn("tok");
         given(jwtService.getUsernameFromToken("tok")).willReturn("alice");
-        var alice = User.builder().userId(1L).username("alice").role(Role.USER).books(new java.util.ArrayList<>()).build();
+
+        var alice = User.builder()
+                .userId(1L)
+                .username("alice")
+                .role(Role.USER)
+                .books(new java.util.ArrayList<>())
+                .build();
         given(userRepository.findByUsername("alice")).willReturn(alice);
 
-        var requestDTO = BookRequestDTO.builder().title("T").author("A").build();
+        var requestDTO = BookRequestDTO.builder()
+                .title("T")
+                .author("A")
+                .build();
         var bookEntity = Book.builder().id(100L).build();
         given(bookDTOConverter.bookFromRequest(requestDTO)).willReturn(bookEntity);
         given(bookRepository.save(bookEntity)).willReturn(bookEntity);
 
-        var responseFromRequest = BookResponseDTO.builder().title("T").author("A").build();
-        given(bookDTOConverter.bookResponseFromRequest(requestDTO)).willReturn(responseFromRequest);
+        var responseFromRequest = BookResponseDTO.builder()
+                .title("T")
+                .author("A")
+                .build();
+        given(bookDTOConverter.bookResponseFromRequest(requestDTO))
+                .willReturn(responseFromRequest);
 
         // When
         var result = underTest.createBook(req, requestDTO);
@@ -67,7 +80,7 @@ class BookServiceMoreTest {
     }
 
     @Test
-    void getBookById_shouldReturnMappedResponseWithUsername() {
+    void getBookByIdShouldReturnMappedResponseWithUsername() {
         // Given
         var u = User.builder().username("bob").build();
         var book = Book.builder().id(5L).user(u).build();
@@ -86,13 +99,13 @@ class BookServiceMoreTest {
     }
 
     @Test
-    void getBookById_shouldThrowWhenNotFound() {
+    void getBookByIdShouldThrowWhenNotFound() {
         given(bookRepository.findById(404L)).willReturn(Optional.empty());
         assertThrows(RuntimeException.class, () -> underTest.getBookById(404L));
     }
 
     @Test
-    void getUserBooks_shouldFilterByCurrentUser() {
+    void getUserBooksShouldFilterByCurrentUser() {
         // Given current user: alice
         given(jwtService.extractTokenFromRequest(req)).willReturn("t");
         given(jwtService.getUsernameFromToken("t")).willReturn("alice");

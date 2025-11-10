@@ -1,4 +1,5 @@
 package com.library.backend.Service;
+
 import com.library.backend.Converters.BookDTOConverter;
 import com.library.backend.DTOs.BookRequestDTO;
 import com.library.backend.DTOs.BookResponseDTO;
@@ -19,8 +20,10 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class BookServiceTest {
@@ -51,10 +54,14 @@ class BookServiceTest {
         given(jwtService.extractTokenFromRequest(req)).willReturn("t");
         given(jwtService.getUsernameFromToken("t")).willReturn("owner");
 
-        var owner = new User(); owner.setUsername("owner"); owner.setRole(Role.USER);
+        var owner = new User();
+        owner.setUsername("owner");
+        owner.setRole(Role.USER);
         given(userRepository.findByUsername("owner")).willReturn(owner);
 
-        var existing = new Book(); existing.setId(id); existing.setUser(owner);
+        var existing = new Book();
+        existing.setId(id);
+        existing.setUser(owner);
         given(bookRepository.findById(id)).willReturn(Optional.of(existing));
 
         var updateReq = new BookRequestDTO();
@@ -84,7 +91,8 @@ class BookServiceTest {
         given(bookRepository.findById(id)).willReturn(Optional.empty());
 
         // When / Then
-        assertThrows(RuntimeException.class, () -> underTest.updateBook(req, id, new BookRequestDTO()));
+        assertThrows(RuntimeException.class,
+                () -> underTest.updateBook(req, id, new BookRequestDTO()));
         verify(bookRepository).findById(id);
         verify(bookRepository, never()).save(any());
     }
@@ -94,15 +102,20 @@ class BookServiceTest {
         // Given
         given(jwtService.extractTokenFromRequest(req)).willReturn("t");
         given(jwtService.getUsernameFromToken("t")).willReturn("owner");
-        var owner = User.builder().userId(1L).username("owner")
-                .books(new ArrayList<>()).build();
+        var owner = User.builder()
+                .userId(1L)
+                .username("owner")
+                .books(new ArrayList<>())
+                .build();
         var book = Book.builder().id(1L).user(owner).build();
         owner.addBook(book);
         given(userRepository.findByUsername("owner")).willReturn(owner);
         given(bookRepository.findById(1L)).willReturn(Optional.of(book));
-        //When
-        underTest.deleteBook(req,1L);
-        //The
+
+        // When
+        underTest.deleteBook(req, 1L);
+
+        // Then
         verify(bookRepository).deleteById(1L);
     }
 
@@ -111,15 +124,21 @@ class BookServiceTest {
         // Given
         given(jwtService.extractTokenFromRequest(req)).willReturn("t");
         given(jwtService.getUsernameFromToken("t")).willReturn("owner");
-        var owner = User.builder().userId(1L).username("owner").role(Role.ADMIN)
-                .books(new ArrayList<>()).build();
+        var owner = User.builder()
+                .userId(1L)
+                .username("owner")
+                .role(Role.ADMIN)
+                .books(new ArrayList<>())
+                .build();
         var anotherUser = User.builder().username("mock").build();
         var book = Book.builder().id(1L).user(anotherUser).build();
         given(userRepository.findByUsername("owner")).willReturn(owner);
         given(bookRepository.findById(1L)).willReturn(Optional.of(book));
-        //When
-        underTest.deleteBook(req,1L);
-        //The
+
+        // When
+        underTest.deleteBook(req, 1L);
+
+        // Then
         verify(bookRepository).deleteById(1L);
     }
 
@@ -131,15 +150,21 @@ class BookServiceTest {
         given(jwtService.extractTokenFromRequest(req)).willReturn("t");
         given(jwtService.getUsernameFromToken("t")).willReturn("intruder");
 
-        var intruder = new User(); intruder.setUsername("intruder"); intruder.setRole(Role.USER);
+        var intruder = new User();
+        intruder.setUsername("intruder");
+        intruder.setRole(Role.USER);
         given(userRepository.findByUsername("intruder")).willReturn(intruder);
 
-        var owner = new User(); owner.setUsername("owner");
-        var book = new Book(); book.setId(id); book.setUser(owner);
+        var owner = new User();
+        owner.setUsername("owner");
+        var book = new Book();
+        book.setId(id);
+        book.setUser(owner);
         given(bookRepository.findById(id)).willReturn(Optional.of(book));
 
         // When / Then
-        assertThrows(RuntimeException.class, () -> underTest.updateBook(req, id, new BookRequestDTO()));
+        assertThrows(RuntimeException.class,
+                () -> underTest.updateBook(req, id, new BookRequestDTO()));
         verify(bookRepository).findById(id);
         verify(bookRepository, never()).save(any());
     }
