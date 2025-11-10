@@ -8,7 +8,14 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -20,18 +27,18 @@ public class BookController {
 
     @PostMapping
     public ResponseEntity<BookResponseDTO> createBook(HttpServletRequest request,
-                                                      @RequestBody @NonNull BookRequestDTO bookRequestDTO){
-        var response = bookService.createBook(request,bookRequestDTO);
+                                                      @RequestBody @NonNull BookRequestDTO bookRequestDTO) {
+        var response = bookService.createBook(request, bookRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping
-    public ResponseEntity<List<BookResponseDTO>> listAll(){
+    public ResponseEntity<List<BookResponseDTO>> listAll() {
         return ResponseEntity.ok(bookService.getAllBooks());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookResponseDTO> getBookById(@NonNull @PathVariable Long id){
+    public ResponseEntity<BookResponseDTO> getBookById(@NonNull @PathVariable Long id) {
         return ResponseEntity.ok(bookService.getBookById(id));
     }
 
@@ -39,19 +46,19 @@ public class BookController {
     public ResponseEntity<BookResponseDTO> updateBook(
             @NonNull @PathVariable Long id,
             @NonNull @RequestBody BookRequestDTO bookRequestDTO,
-            HttpServletRequest request){
-        var response = bookService.updateBook(request,id,bookRequestDTO);
+            HttpServletRequest request) {
+        var response = bookService.updateBook(request, id, bookRequestDTO);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteBook(@PathVariable Long id,HttpServletRequest request){
-        var response = bookService.deleteBook(request,id);
+    public ResponseEntity<String> deleteBook(@PathVariable Long id, HttpServletRequest request) {
+        var response = bookService.deleteBook(request, id);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/myBooks")
-    public ResponseEntity<List<BookResponseDTO>> userBooks(HttpServletRequest request){
+    public ResponseEntity<List<BookResponseDTO>> userBooks(HttpServletRequest request) {
         return ResponseEntity.ok(bookService.getUserBooks(request));
     }
 }

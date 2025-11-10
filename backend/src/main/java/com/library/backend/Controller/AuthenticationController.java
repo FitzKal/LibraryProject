@@ -20,20 +20,20 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponseDto> login(@RequestBody @NonNull AuthRequestDto loginRequest){
+    public ResponseEntity<AuthResponseDto> login(@RequestBody @NonNull AuthRequestDto loginRequest) {
         var response = authenticationService.Login(loginRequest);
-        return ResponseEntity.status(HttpStatus.OK).
-                body(response);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(response);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponseDto> register(@RequestBody @NonNull AuthRequestDto registerRequest){
+    public ResponseEntity<AuthResponseDto> register(@RequestBody @NonNull AuthRequestDto registerRequest) {
         var response = authenticationService.Register(registerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request){
+    public ResponseEntity<String> logout(HttpServletRequest request) {
         var message = authenticationService.Logout(request);
         return ResponseEntity.ok(message);
     }
