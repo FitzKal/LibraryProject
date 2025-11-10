@@ -1,6 +1,5 @@
 package com.library.backend.Service;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
+
 import com.library.backend.Converters.BookDTOConverter;
 import com.library.backend.DTOs.BookRequestDTO;
 import com.library.backend.DTOs.BookResponseDTO;
@@ -23,9 +22,10 @@ public class BookService {
     private final JWTService jwtService;
     private final UserRepository userRepository;
     private final BookDTOConverter bookDTOConverter;
-    private final ObjectWriter objectWriter = new ObjectMapper().writer().withDefaultPrettyPrinter();
 
-    public BookResponseDTO createBook(HttpServletRequest request, BookRequestDTO bookRequestDTO){
+    public BookResponseDTO createBook(
+            HttpServletRequest request, BookRequestDTO bookRequestDTO) {
+
         var user = getUserFromRequest(request);
         var convertedBook = bookDTOConverter.bookFromRequest(bookRequestDTO);
         user.addBook(convertedBook);
@@ -35,38 +35,34 @@ public class BookService {
         return convertedToResponse;
     }
 
-    public BookResponseDTO getBookById(Long id){
-        var book = bookRepository.findById(id).orElseThrow(()->new RuntimeException("Book not found"));
+    public BookResponseDTO getBookById(Long id) {
+        var book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
         var response = bookDTOConverter.BookToResponse(book);
         response.setUsername(book.getUser().getUsername());
         return response;
     }
 
     @SneakyThrows
-    public List<BookResponseDTO> getAllBooks(){
+    public List<BookResponseDTO> getAllBooks() {
         var list = bookRepository.findAll().stream()
                 .map(book -> {
                     var response = bookDTOConverter.BookToResponse(book);
                     response.setUsername(book.getUser().getUsername());
                     return response;
-                }).toList();
-      /*  var jsonList = list.stream().map(objectWriter::writeValueAsString).toList();
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("books,txt"));
-            for(var element : jsonList){
-                writer.write(element);
-                writer.newLine();
-            }
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }*/
+                })
+                .toList();
         return list;
     }
 
-    public BookResponseDTO updateBook(HttpServletRequest request, Long id, BookRequestDTO bookRequestDTO){
-        var bookToUpdate = bookRepository.findById(id).orElseThrow(()-> new RuntimeException("Book not found"));
+    public BookResponseDTO updateBook(
+            HttpServletRequest request, Long id, BookRequestDTO bookRequestDTO) {
+
+        var bookToUpdate = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Book not found"));
         var user = getUserFromRequest(request);
-        if (checkOwnerShip(user.getUsername(),bookToUpdate)){
+
+        if (checkOwnerShip(user.getUsername(), bookToUpdate)) {
             bookToUpdate.setTitle(bookRequestDTO.getTitle());
             bookToUpdate.setDescription(bookRequestDTO.getDescription());
             bookToUpdate.setPictureSRC(bookRequestDTO.getPictureSRC());
@@ -74,27 +70,30 @@ public class BookService {
             bookToUpdate.setAuthor(bookRequestDTO.getAuthor());
             bookRepository.save(bookToUpdate);
             return bookDTOConverter.BookToResponse(bookToUpdate);
-        }else {
-            throw new RuntimeException("You are not the owner of the book, or don't have permission to edit the book");
+        } else {
+            throw new RuntimeException(
+                    "You are not the owner of the book, or don't have permission to edit the book");
         }
 
     }
 
-    public String deleteBook(HttpServletRequest request, Long id){
+    public String deleteBook(HttpServletRequest request, Long id) {
         var bookToDelete = bookRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("The book cannot be found"));
+                .orElseThrow(() -> new RuntimeException("The book cannot be found"));
         var user = getUserFromRequest(request);
-        if (checkOwnerShip(user.getUsername(),bookToDelete)){
+
+        if (checkOwnerShip(user.getUsername(), bookToDelete)) {
             user.removeBook(bookToDelete);
             bookRepository.deleteById(id);
-            return "The book with the id: "+ id +" has been deleted";
-        }else {
-            throw new RuntimeException("You are not the owner of the book, or don't have permission to delete the book");
+            return "The book with the id: " + id + " has been deleted";
+        } else {
+            throw new RuntimeException(
+                    "You are not the owner of the book, or don't have permission to delete the book");
         }
 
     }
 
-    public List<BookResponseDTO> getUserBooks(HttpServletRequest request){
+    public List<BookResponseDTO> getUserBooks(HttpServletRequest request) {
         var user = getUserFromRequest(request);
         return bookRepository.findAll().stream()
                 .map(book -> {
@@ -102,18 +101,20 @@ public class BookService {
                     response.setUsername(book.getUser().getUsername());
                     return response;
                 })
-                .filter(book->book.getUsername().equals(user.getUsername())).toList();
+                .filter(book -> book.getUsername().equals(user.getUsername()))
+                .toList();
     }
 
 
-    private User getUserFromRequest(HttpServletRequest request){
+    private User getUserFromRequest(HttpServletRequest request) {
         var tokenFromRequest = jwtService.extractTokenFromRequest(request);
         var username = jwtService.getUsernameFromToken(tokenFromRequest);
         return userRepository.findByUsername(username);
     }
 
-    private boolean checkOwnerShip(String username, Book book){
+    private boolean checkOwnerShip(String username, Book book) {
         var user = userRepository.findByUsername(username);
-        return (book.getUser().getUsername().equals(username) || user.getRole().equals(Role.ADMIN));
+        return (book.getUser().getUsername().equals(username)
+                || user.getRole().equals(Role.ADMIN));
     }
 }
