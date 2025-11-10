@@ -24,30 +24,40 @@ public class SecurityConfig {
     private JWTFilter jwtFilter;
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http) throws Exception {
+
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request ->
                         request.requestMatchers("/api/authenticate/register").permitAll()
                                 .requestMatchers("/api/authenticate/login").permitAll()
-                                .requestMatchers(HttpMethod.GET,"/api/books/**").hasAnyRole("ADMIN","USER")
-                                .requestMatchers(HttpMethod.DELETE,"/api/books/**").hasAnyRole("ADMIN","USER")
-                                .requestMatchers(HttpMethod.POST,"/api/books/**").hasAnyRole("ADMIN","USER")
-                                .requestMatchers(HttpMethod.PUT,"/api/books/**").hasAnyRole("ADMIN","USER")
+                                .requestMatchers(HttpMethod.GET, "/api/books/**")
+                                .hasAnyRole("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.DELETE, "/api/books/**")
+                                .hasAnyRole("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.POST, "/api/books/**")
+                                .hasAnyRole("ADMIN", "USER")
+                                .requestMatchers(HttpMethod.PUT, "/api/books/**")
+                                .hasAnyRole("ADMIN", "USER")
                                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                                .requestMatchers(HttpMethod.POST, "/api/authenticate/logout").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/api/authenticate/logout")
+                                .authenticated()
                                 .anyRequest().authenticated())
-                .sessionManagement(session ->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration configuration) throws Exception {
+
         return configuration.getAuthenticationManager();
     }
 }

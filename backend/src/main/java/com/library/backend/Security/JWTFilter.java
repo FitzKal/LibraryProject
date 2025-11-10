@@ -22,27 +22,25 @@ public class JWTFilter extends OncePerRequestFilter {
     private final JWTService jwtService;
     ApplicationContext context;
 
-
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
         String token = null;
         String username = null;
-        if (authHeader !=null && authHeader.startsWith("Bearer ")){
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = jwtService.extractTokenFromRequest(request);
             username = jwtService.getUsernameFromToken(token);
         }
         if (username != null &&
                 SecurityContextHolder.getContext().getAuthentication() == null &&
-                !jwtService.getBlackList().contains(token)){
+                !jwtService.getBlackList().contains(token)) {
             UserDetails userDetails = context.getBean(CustomUserDetailService.class).loadUserByUsername(username);
-            if (jwtService.validateToken(token,userDetails)){
+            if (jwtService.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 }
