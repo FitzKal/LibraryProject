@@ -5,6 +5,7 @@ FROM gradle:8-jdk23-alpine AS builder
 WORKDIR /app
 
 COPY build.gradle settings.gradle ./
+COPY config ./config
 COPY src ./src
 RUN gradle build -x test --no-daemon
 
