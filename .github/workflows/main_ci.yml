@@ -1,0 +1,84 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME_BACKEND: backend
+  IMAGE_NAME_FRONTEND: frontend
+
+jobs:
+  # ========================================
+  # Build & Push Backend Image
+  # ========================================
+  build-backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Convert repo to lowercase
+        run: echo "REPO_LOWER=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/${{ env.IMAGE_NAME_BACKEND }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ========================================
+  # Build & Push Frontend Image
+  # ========================================
+  build-frontend:
+    runs-on: ubuntu-latest
+    needs: build-backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Convert repo name to lowercase again for this job
+      - name: Convert repo to lowercase
+        run: echo "REPO_LOWER=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.REPO_LOWER }}/${{ env.IMAGE_NAME_FRONTEND }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ========================================
+  # Deployment (runs only when pushed to master)
+  # ========================================
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [ build-backend, build-frontend ]
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+      - run: echo "🚀 Build complete — images pushed to GHCR. Deployment comes next."
